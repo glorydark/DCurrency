@@ -16,6 +16,7 @@ import tip.utils.Api;
 import tip.utils.variables.BaseVariable;
 
 import java.io.File;
+import java.net.ConnectException;
 import java.util.*;
 
 public class CurrencyMain extends PluginBase {
@@ -56,7 +57,7 @@ public class CurrencyMain extends PluginBase {
 
         Config config = new Config(path + "/config.yml", Config.YAML);
         registeredCurrencies = new ArrayList<>(config.getStringList("registered_currencies"));
-        if (config.exists("mysql")) {
+        if (config.exists("mysql") && config.getBoolean("mysql.enable", false)) {
             ConfigSection section = config.getSection("mysql");
             String host = section.getString("host");
             int port = section.getInt("port");
@@ -67,8 +68,8 @@ public class CurrencyMain extends PluginBase {
                 provider = new CurrencyMysqlProvider(host, port, user, password, database);
                 this.getLogger().info(getLang("tips_mysql_enabled"));
             } catch (MySqlLoginException e) {
-                provider = new CurrencyJsonProvider();
                 this.getLogger().info(getLang("tips_mysql_disabled"));
+                throw new RuntimeException(e);
             }
         } else {
             this.getLogger().info(getLang("tips_json_enabled"));

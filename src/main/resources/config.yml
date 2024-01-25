@@ -1,6 +1,6 @@
-registered_currencies:
-  - "测试货币"
+registered_currencies: []
 mysql:
+  enable: false
   host: "0.0.0.0"
   port: 19132
   user: "user"

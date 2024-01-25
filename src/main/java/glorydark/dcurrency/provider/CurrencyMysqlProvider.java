@@ -15,6 +15,7 @@ import glorydark.dcurrency.CurrencyMain;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.net.ConnectException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -93,7 +94,7 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         Map<String, Object> map = new LinkedHashMap<>();
         for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
             double balance = getCurrencyBalance(playerName, registeredCurrency);
-            if (balance >= 0) {
+            if (balance > 0) {
                 map.put(registeredCurrency, balance);
             }
         }
