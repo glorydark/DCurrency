@@ -22,7 +22,7 @@ public class CurrencyGiveCommand extends SubCommand {
         if (strings.length != 4) {
             return false;
         }
-        if (!CurrencyMain.registeredCurrencies.contains(strings[2])) {
+        if (!CurrencyMain.getRegisteredCurrencies().contains(strings[2])) {
             sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_unregistered_currencies"));
             return false;
         }

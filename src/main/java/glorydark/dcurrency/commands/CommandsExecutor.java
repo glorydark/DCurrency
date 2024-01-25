@@ -30,7 +30,6 @@ public class CommandsExecutor extends Command {
         loadSubCommand(new CurrencySetCommand(CurrencyMain.getLang("command_minor_set"), CurrencyMain.getLang("help_set")));
         // loadSubCommand(new CurrencyAdminRedeemCommand(CurrencyMain.getLang("command_minor_redeem_admin"), CurrencyMain.getLang("help_redeem_admin")));
         loadSubCommand(new CurrencyCreateCommand(CurrencyMain.getLang("command_minor_create"), CurrencyMain.getLang("help_create")));
-        loadSubCommand(new CurrencyReloadCommand(CurrencyMain.getLang("command_minor_reload"), CurrencyMain.getLang("help_reload")));
         //Players
         loadSubCommand(new CurrencyMeCommand(CurrencyMain.getLang("command_minor_me"), CurrencyMain.getLang("help_me")));
         loadSubCommand(new CurrencyPayCommand(CurrencyMain.getLang("command_minor_pay"), CurrencyMain.getLang("help_pay")));
@@ -57,7 +56,6 @@ public class CommandsExecutor extends Command {
             sender.sendMessage(CurrencyMain.getLang("help_see"));
             sender.sendMessage(CurrencyMain.getLang("help_all_money"));
             sender.sendMessage(CurrencyMain.getLang("help_create"));
-            sender.sendMessage(CurrencyMain.getLang("help_reload"));
         }
     }
 
