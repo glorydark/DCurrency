@@ -2,7 +2,6 @@ package glorydark.dcurrency.provider;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.utils.Config;
 import com.smallaswater.easysql.exceptions.MySqlLoginException;
 import com.smallaswater.easysql.mysql.data.SqlData;
 import com.smallaswater.easysql.mysql.data.SqlDataList;
@@ -13,9 +12,6 @@ import com.smallaswater.easysql.v3.mysql.manager.SqlManager;
 import com.smallaswater.easysql.v3.mysql.utils.SelectType;
 import glorydark.dcurrency.CurrencyMain;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.net.ConnectException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

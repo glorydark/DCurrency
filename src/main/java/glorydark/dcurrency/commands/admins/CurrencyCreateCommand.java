@@ -2,9 +2,6 @@ package glorydark.dcurrency.commands.admins;
 
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.utils.Config;
-import com.smallaswater.easysql.mysql.utils.DataType;
-import com.smallaswater.easysql.mysql.utils.TableType;
-import com.smallaswater.easysql.v3.mysql.manager.SqlManager;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
 import glorydark.dcurrency.provider.CurrencyMysqlProvider;

@@ -9,15 +9,17 @@ import com.smallaswater.npc.data.RsNpcConfig;
 import com.smallaswater.npc.variable.BaseVariableV2;
 import com.smallaswater.npc.variable.VariableManage;
 import glorydark.dcurrency.commands.CommandsExecutor;
+import glorydark.dcurrency.provider.CurrencyJsonProvider;
 import glorydark.dcurrency.provider.CurrencyMysqlProvider;
 import glorydark.dcurrency.provider.CurrencyProvider;
-import glorydark.dcurrency.provider.CurrencyJsonProvider;
 import tip.utils.Api;
 import tip.utils.variables.BaseVariable;
 
 import java.io.File;
-import java.net.ConnectException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CurrencyMain extends PluginBase {
 
