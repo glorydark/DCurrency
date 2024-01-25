@@ -1,6 +1,0 @@
-displayName: "test"
-description: "233"
-needCurrency:
-  - "测试货币|2.0"
-executeCommands: []
-limitTimes: 2
