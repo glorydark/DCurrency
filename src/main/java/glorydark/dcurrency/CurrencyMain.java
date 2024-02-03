@@ -69,7 +69,7 @@ public class CurrencyMain extends PluginBase {
             try {
                 provider = new CurrencyMysqlProvider(host, port, user, password, database);
                 this.getLogger().info(getLang("tips_mysql_enabled"));
-            } catch (MySqlLoginException e) {
+            } catch (Exception e) {
                 this.getLogger().info(getLang("tips_mysql_disabled"));
                 throw new RuntimeException(e);
             }
