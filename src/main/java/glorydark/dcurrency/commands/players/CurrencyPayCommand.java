@@ -42,8 +42,14 @@ public class CurrencyPayCommand extends SubCommand {
             sender.sendMessage(CurrencyMain.getLang("message_default_playerNotFound"));
             return true;
         }
-        if (CurrencyMain.getProvider().reduceCurrencyBalance(sender.getName(), strings[2], Double.parseDouble(strings[3]))) {
-            CurrencyMain.getProvider().addCurrencyBalance(player.getName(), strings[2], Double.parseDouble(strings[3]));
+        String currencyName = strings[2];
+        double count = Double.parseDouble(strings[3]);
+        if (Double.isInfinite(count) || Double.isNaN(count)) {
+            sender.sendMessage(CurrencyMain.getLang("message_player_general_unsupported_value"));
+            return true;
+        }
+        if (CurrencyMain.getProvider().reduceCurrencyBalance(sender.getName(), currencyName, count)) {
+            CurrencyMain.getProvider().addCurrencyBalance(player.getName(), currencyName, count);
             sender.sendMessage(CurrencyMain.getLang("message_player_pay_success"));
         } else {
             sender.sendMessage(CurrencyMain.getLang("message_player_pay_noEnoughCurrency"));

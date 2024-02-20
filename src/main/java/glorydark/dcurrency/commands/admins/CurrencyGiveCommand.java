@@ -1,8 +1,14 @@
 package glorydark.dcurrency.commands.admins;
 
+import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CurrencyGiveCommand extends SubCommand {
 
@@ -26,8 +32,25 @@ public class CurrencyGiveCommand extends SubCommand {
             sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_unregistered_currencies"));
             return false;
         }
-        CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]));
-        sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
+        switch (strings[1]) {
+            case "@a":
+                Collection<Player> players = Server.getInstance().getOnlinePlayers().values();
+                for (Player player : players) {
+                    CurrencyMain.getProvider().addCurrencyBalance(player.getName(), strings[2], Double.parseDouble(strings[3]));
+                }
+                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(players.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3]));
+                break;
+            case "@r":
+                players = Server.getInstance().getOnlinePlayers().values();
+                ThreadLocalRandom random = ThreadLocalRandom.current();
+                CurrencyMain.getProvider().addCurrencyBalance(players.toArray(new Player[0])[random.nextInt(0, players.size())].getName(), strings[2], Double.parseDouble(strings[3]));
+                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
+                break;
+            default:
+                CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]));
+                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
+                break;
+        }
         return true;
     }
 

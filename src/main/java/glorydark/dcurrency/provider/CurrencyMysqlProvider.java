@@ -17,11 +17,9 @@ import java.util.Map;
 
 public class CurrencyMysqlProvider implements CurrencyProvider {
 
-    protected SqlManager sqlManager;
-
     protected final String DATA_CURRENCY_VALUE = "value";
-
     protected final String DATA_PLAYER_NAME = "name";
+    protected SqlManager sqlManager;
 
     public CurrencyMysqlProvider(String host, int port, String user, String password, String database) throws MySqlLoginException {
         this.sqlManager = new SqlManager(CurrencyMain.getPlugin(), new UserData(

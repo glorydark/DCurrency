@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
-import com.smallaswater.easysql.exceptions.MySqlLoginException;
 import com.smallaswater.npc.data.RsNpcConfig;
 import com.smallaswater.npc.variable.BaseVariableV2;
 import com.smallaswater.npc.variable.VariableManage;
@@ -23,8 +22,8 @@ import java.util.Map;
 
 public class CurrencyMain extends PluginBase {
 
-    protected static String path;
     public static Map<String, Object> lang = new HashMap<>();
+    protected static String path;
     protected static List<String> registeredCurrencies = new ArrayList<>();
     protected static CurrencyMain plugin;
     protected static CurrencyProvider provider;
@@ -35,6 +34,22 @@ public class CurrencyMain extends PluginBase {
 
     public static CurrencyMain getPlugin() {
         return plugin;
+    }
+
+    public static String getLang(String string, Object... params) {
+        if (lang.containsKey(string)) {
+            String out = (String) lang.get(string);
+            for (int i = 1; i <= params.length; i++) {
+                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
+            }
+            return out;
+        } else {
+            return "Key Not Found!";
+        }
+    }
+
+    public static List<String> getRegisteredCurrencies() {
+        return registeredCurrencies;
     }
 
     public String getPath() {
@@ -128,21 +143,5 @@ public class CurrencyMain extends PluginBase {
                 this.addVariable("{DCurrency_balance_" + currency + "}", String.valueOf(provider.getCurrencyBalance(player.getName(), currency)));
             }
         }
-    }
-
-    public static String getLang(String string, Object... params) {
-        if (lang.containsKey(string)) {
-            String out = (String) lang.get(string);
-            for (int i = 1; i <= params.length; i++) {
-                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
-            }
-            return out;
-        } else {
-            return "Key Not Found!";
-        }
-    }
-
-    public static List<String> getRegisteredCurrencies() {
-        return registeredCurrencies;
     }
 }
