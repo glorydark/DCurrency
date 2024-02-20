@@ -6,8 +6,10 @@ import cn.nukkit.command.CommandSender;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CurrencyGiveCommand extends SubCommand {
@@ -34,18 +36,21 @@ public class CurrencyGiveCommand extends SubCommand {
         }
         switch (strings[1]) {
             case "@a":
-                Collection<Player> players = Server.getInstance().getOnlinePlayers().values();
-                if (players.size() == 0) {
+                List<String> playerNames = new ArrayList<>();
+                for (Player value : Server.getInstance().getOnlinePlayers().values()) {
+                    playerNames.add(value.getName());
+                }
+                if (playerNames.size() == 0) {
                     sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_no_online_player"));
                     return true;
                 }
-                for (Player player : players) {
-                    CurrencyMain.getProvider().addCurrencyBalance(player.getName(), strings[2], Double.parseDouble(strings[3]));
+                for (String player : playerNames) {
+                    CurrencyMain.getProvider().addCurrencyBalance(player, strings[2], Double.parseDouble(strings[3]));
                 }
-                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(players.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3]));
+                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3]));
                 break;
             case "@r":
-                players = Server.getInstance().getOnlinePlayers().values();
+                Collection<Player> players = Server.getInstance().getOnlinePlayers().values();
                 if (players.size() == 0) {
                     sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_no_online_player"));
                     return true;
