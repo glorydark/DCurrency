@@ -61,12 +61,12 @@ public class CurrencyGiveCommand extends SubCommand {
                 String playerName = allPlayerCollection.toArray(new Player[0])[random.nextInt(0, allPlayerCollection.size())].getName();
                 CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]));
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", playerName, strings[2], strings[3]));
-                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3]))));
+                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2])));
                 break;
             default:
                 CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]));
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
-                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3]))));
+                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2])));
                 break;
         }
         return true;
