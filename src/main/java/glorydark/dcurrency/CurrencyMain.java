@@ -32,6 +32,40 @@ public class CurrencyMain extends PluginBase {
     protected static CurrencyProvider provider;
     protected static Logger pluginLogger;
 
+    public static Logger getPluginLogger() {
+        return pluginLogger;
+    }
+
+    public static CurrencyProvider getProvider() {
+        return provider;
+    }
+
+    public static CurrencyMain getPlugin() {
+        return plugin;
+    }
+
+    public static String getLang(String string, Object... params) {
+        if (lang.containsKey(string)) {
+            String out = (String) lang.get(string);
+            for (int i = 1; i <= params.length; i++) {
+                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
+            }
+            return out;
+        } else {
+            return "Key Not Found!";
+        }
+    }
+
+    public static List<String> getRegisteredCurrencies() {
+        return registeredCurrencies;
+    }
+
+    public static String getDate(long millis) {
+        Date date = new Date(millis);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        return format.format(date);
+    }
+
     @Override
     public void onLoad() {
         this.getLogger().info("DCurrency OnLoad");
@@ -104,37 +138,9 @@ public class CurrencyMain extends PluginBase {
         this.getLogger().info("DCurrency OnEnable");
     }
 
-    public static Logger getPluginLogger() {
-        return pluginLogger;
-    }
-
     @Override
     public PluginLogger getLogger() {
         return super.getLogger();
-    }
-
-    public static CurrencyProvider getProvider() {
-        return provider;
-    }
-
-    public static CurrencyMain getPlugin() {
-        return plugin;
-    }
-
-    public static String getLang(String string, Object... params) {
-        if (lang.containsKey(string)) {
-            String out = (String) lang.get(string);
-            for (int i = 1; i <= params.length; i++) {
-                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
-            }
-            return out;
-        } else {
-            return "Key Not Found!";
-        }
-    }
-
-    public static List<String> getRegisteredCurrencies() {
-        return registeredCurrencies;
     }
 
     public String getPath() {
@@ -168,11 +174,5 @@ public class CurrencyMain extends PluginBase {
                 this.addVariable("{DCurrency_balance_" + currency + "}", String.valueOf(provider.getCurrencyBalance(player.getName(), currency)));
             }
         }
-    }
-
-    public static String getDate(long millis) {
-        Date date = new Date(millis);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-        return format.format(date);
     }
 }
