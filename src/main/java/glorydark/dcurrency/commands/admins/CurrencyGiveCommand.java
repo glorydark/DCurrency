@@ -3,6 +3,7 @@ package glorydark.dcurrency.commands.admins;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
+import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
 
@@ -46,7 +47,7 @@ public class CurrencyGiveCommand extends SubCommand {
                     String playerName = player.getName();
                     playerNames.add(playerName);
                     CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]));
-                    CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3]))));
+                    CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2])));
                 }
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3]));
                 break;

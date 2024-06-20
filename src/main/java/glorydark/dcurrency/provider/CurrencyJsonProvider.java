@@ -3,6 +3,7 @@ package glorydark.dcurrency.provider;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.utils.Config;
+import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang("message_player_currencyReduced", currencyName, count));
         }
-        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count));
+        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName)));
         return true;
     }
 

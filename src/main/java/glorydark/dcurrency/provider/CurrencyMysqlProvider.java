@@ -10,6 +10,7 @@ import com.smallaswater.easysql.mysql.utils.TableType;
 import com.smallaswater.easysql.mysql.utils.UserData;
 import com.smallaswater.easysql.v3.mysql.manager.SqlManager;
 import com.smallaswater.easysql.v3.mysql.utils.SelectType;
+import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 
 import java.util.LinkedHashMap;
@@ -81,7 +82,7 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang("message_player_currencyReduced", currencyName, count));
         }
-        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count));
+        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName)));
         return true;
     }
 
