@@ -36,32 +36,36 @@ public class CurrencyGiveCommand extends SubCommand {
         }
         switch (strings[1]) {
             case "@a":
-                List<String> playerNames = new ArrayList<>();
-                for (Player value : Server.getInstance().getOnlinePlayers().values()) {
-                    playerNames.add(value.getName());
-                }
-                if (playerNames.size() == 0) {
+                List<Player> allPlayerList = new ArrayList<>(Server.getInstance().getOnlinePlayers().values());
+                if (allPlayerList.size() == 0) {
                     sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_no_online_player"));
                     return true;
                 }
-                for (String player : playerNames) {
-                    CurrencyMain.getProvider().addCurrencyBalance(player, strings[2], Double.parseDouble(strings[3]));
+                List<String> playerNames = new ArrayList<>();
+                for (Player player : allPlayerList) {
+                    String playerName = player.getName();
+                    playerNames.add(playerName);
+                    CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]));
+                    CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3]))));
                 }
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3]));
                 break;
             case "@r":
-                Collection<Player> players = Server.getInstance().getOnlinePlayers().values();
-                if (players.size() == 0) {
+                Collection<Player> allPlayerCollection = Server.getInstance().getOnlinePlayers().values();
+                if (allPlayerCollection.size() == 0) {
                     sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_no_online_player"));
                     return true;
                 }
                 ThreadLocalRandom random = ThreadLocalRandom.current();
-                CurrencyMain.getProvider().addCurrencyBalance(players.toArray(new Player[0])[random.nextInt(0, players.size())].getName(), strings[2], Double.parseDouble(strings[3]));
-                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
+                String playerName = allPlayerCollection.toArray(new Player[0])[random.nextInt(0, allPlayerCollection.size())].getName();
+                CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]));
+                sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", playerName, strings[2], strings[3]));
+                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3]))));
                 break;
             default:
                 CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]));
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
+                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3]))));
                 break;
         }
         return true;

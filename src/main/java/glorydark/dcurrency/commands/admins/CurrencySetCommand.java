@@ -24,6 +24,7 @@ public class CurrencySetCommand extends SubCommand {
         }
         CurrencyMain.getProvider().setCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), true);
         sender.sendMessage(CurrencyMain.getLang("message_op_setCurrency", strings[1], strings[2], strings[3]));
+        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.set", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3]))));
         return true;
     }
 

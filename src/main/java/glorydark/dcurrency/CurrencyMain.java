@@ -2,12 +2,14 @@ package glorydark.dcurrency;
 
 import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
 import com.smallaswater.npc.data.RsNpcConfig;
 import com.smallaswater.npc.variable.BaseVariableV2;
 import com.smallaswater.npc.variable.VariableManage;
 import glorydark.dcurrency.commands.CommandsExecutor;
+import glorydark.dcurrency.logger.LoggerFormatter;
 import glorydark.dcurrency.provider.CurrencyJsonProvider;
 import glorydark.dcurrency.provider.CurrencyMysqlProvider;
 import glorydark.dcurrency.provider.CurrencyProvider;
@@ -15,10 +17,11 @@ import tip.utils.Api;
 import tip.utils.variables.BaseVariable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 public class CurrencyMain extends PluginBase {
 
@@ -27,34 +30,7 @@ public class CurrencyMain extends PluginBase {
     protected static List<String> registeredCurrencies = new ArrayList<>();
     protected static CurrencyMain plugin;
     protected static CurrencyProvider provider;
-
-    public static CurrencyProvider getProvider() {
-        return provider;
-    }
-
-    public static CurrencyMain getPlugin() {
-        return plugin;
-    }
-
-    public static String getLang(String string, Object... params) {
-        if (lang.containsKey(string)) {
-            String out = (String) lang.get(string);
-            for (int i = 1; i <= params.length; i++) {
-                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
-            }
-            return out;
-        } else {
-            return "Key Not Found!";
-        }
-    }
-
-    public static List<String> getRegisteredCurrencies() {
-        return registeredCurrencies;
-    }
-
-    public String getPath() {
-        return path;
-    }
+    protected static Logger pluginLogger;
 
     @Override
     public void onLoad() {
@@ -66,6 +42,18 @@ public class CurrencyMain extends PluginBase {
         // initialize
         path = this.getDataFolder().getPath();
         plugin = this;
+        pluginLogger = Logger.getLogger("LotteryBox_" + UUID.randomUUID());
+        new File(path + "/logs/").mkdirs();
+
+        FileHandler fileHandler;
+        try {
+            fileHandler = new FileHandler(path + "/logs/" + getDate(System.currentTimeMillis()) + ".log");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        fileHandler.setFormatter(new LoggerFormatter());
+        pluginLogger.addHandler(fileHandler);
+        pluginLogger.setUseParentHandlers(false);
         //load language config
         this.saveDefaultConfig();
         this.saveResource("lang.properties", false);
@@ -116,6 +104,43 @@ public class CurrencyMain extends PluginBase {
         this.getLogger().info("DCurrency OnEnable");
     }
 
+    public static Logger getPluginLogger() {
+        return pluginLogger;
+    }
+
+    @Override
+    public PluginLogger getLogger() {
+        return super.getLogger();
+    }
+
+    public static CurrencyProvider getProvider() {
+        return provider;
+    }
+
+    public static CurrencyMain getPlugin() {
+        return plugin;
+    }
+
+    public static String getLang(String string, Object... params) {
+        if (lang.containsKey(string)) {
+            String out = (String) lang.get(string);
+            for (int i = 1; i <= params.length; i++) {
+                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
+            }
+            return out;
+        } else {
+            return "Key Not Found!";
+        }
+    }
+
+    public static List<String> getRegisteredCurrencies() {
+        return registeredCurrencies;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
     @Override
     public void onDisable() {
         this.getLogger().info("DCurrency OnDisable");
@@ -143,5 +168,11 @@ public class CurrencyMain extends PluginBase {
                 this.addVariable("{DCurrency_balance_" + currency + "}", String.valueOf(provider.getCurrencyBalance(player.getName(), currency)));
             }
         }
+    }
+
+    public static String getDate(long millis) {
+        Date date = new Date(millis);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        return format.format(date);
     }
 }
