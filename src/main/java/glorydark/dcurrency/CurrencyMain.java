@@ -1,6 +1,8 @@
 package glorydark.dcurrency;
 
 import cn.nukkit.Player;
+import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
@@ -173,6 +175,13 @@ public class CurrencyMain extends PluginBase {
             for (String currency : registeredCurrencies) {
                 this.addVariable("{DCurrency_balance_" + currency + "}", String.valueOf(provider.getCurrencyBalance(player.getName(), currency)));
             }
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        if (provider instanceof CurrencyJsonProvider) {
+            ((CurrencyJsonProvider) provider).playerCurrencyCache.remove(event.getPlayer().getName());
         }
     }
 }
