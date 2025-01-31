@@ -5,12 +5,12 @@ import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
 
-public class CurrencySetCommand extends SubCommand {
+public class CurrencyTakeCommand extends SubCommand {
 
     private final String command;
     private final String help;
 
-    public CurrencySetCommand(String command, String help) {
+    public CurrencyTakeCommand(String command, String help) {
         this.command = command;
         this.help = help;
     }
@@ -27,9 +27,13 @@ public class CurrencySetCommand extends SubCommand {
         if (strings.length == 5) {
             reason = strings[4];
         }
-        CurrencyMain.getProvider().setCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), true);
-        sender.sendMessage(CurrencyMain.getLang("message_op_setCurrency", strings[1], strings[2], strings[3]));
-        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.set", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2]), reason));
+        if (!CurrencyMain.getRegisteredCurrencies().contains(strings[2])) {
+            sender.sendMessage(CurrencyMain.getLang("message_op_unregistered_currencies", strings[2]));
+            return false;
+        }
+        CurrencyMain.getProvider().reduceCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]));
+        sender.sendMessage(CurrencyMain.getLang("message_op_takeCurrency", strings[1], strings[2], strings[3]));
+        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.take", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2]), reason));
         return true;
     }
 

@@ -37,6 +37,7 @@ public class CommandsExecutor extends Command {
         loadSubCommand(new CurrencyAllCommand(CurrencyMain.getLang("command_minor_allMoney"), CurrencyMain.getLang("help_all_money")));
         loadSubCommand(new CurrencyTopCommand(CurrencyMain.getLang("command_minor_top"), CurrencyMain.getLang("help_top")));
         loadSubCommand(new CurrencyClearAllCommand(CurrencyMain.getLang("command_minor_clear_all"), CurrencyMain.getLang("help_clear_all")));
+        loadSubCommand(new CurrencyTakeCommand(CurrencyMain.getLang("command_minor_take"), CurrencyMain.getLang("help_take")));
     }
 
     private void loadSubCommand(SubCommand cmd) {
