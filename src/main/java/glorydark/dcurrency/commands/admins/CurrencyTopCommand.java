@@ -42,10 +42,14 @@ public class CurrencyTopCommand extends SubCommand {
         }
         List<Map.Entry<String, Double>> results = map.entrySet().stream().sorted(Comparator.comparingDouble(Map.Entry::getValue)).collect(Collectors.toList());
         Collections.reverse(results);
-        if (results.size() > 0) {
+        int total = 0;
+        for (Map.Entry<String, Double> result : results) {
+            total += result.getValue();
+        }
+        if (!results.isEmpty()) {
             int startIndex = (page - 1) * 10; // 0
             int endIndex = Math.min(results.size() - 1, startIndex + 9); // 0
-            sender.sendMessage(CurrencyMain.getLang("message.op.top.title", key, page, results.size() / page + ((results.size() % page > 0)? 1 : 0)));
+            sender.sendMessage(CurrencyMain.getLang("message.op.top.title", key, page, results.size() / page + ((results.size() % page > 0)? 1 : 0), total));
             for (int i = startIndex; i <= endIndex; i++) {
                 Map.Entry<String, Double> result = results.get(i);
                 sender.sendMessage(CurrencyMain.getLang("message.op.top.entry", i + 1, result.getKey(), result.getValue()));
