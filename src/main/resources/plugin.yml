@@ -7,3 +7,4 @@ description: DCurrency
 load: POSTWORLD
 softdepend:
   - EasyMySQL
+  - PlaceHolderAPI

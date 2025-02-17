@@ -7,6 +7,7 @@ import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.ConfigSection;
+import com.creeperface.nukkit.placeholderapi.api.PlaceholderAPI;
 import com.smallaswater.npc.data.RsNpcConfig;
 import com.smallaswater.npc.variable.BaseVariableV2;
 import com.smallaswater.npc.variable.VariableManage;
@@ -70,13 +71,21 @@ public class CurrencyMain extends PluginBase {
         this.getServer().getCommandMap().register("", new CommandsExecutor(lang.getTranslation("command_main")));
         // loading functions
         if (this.getServer().getPluginManager().getPlugin("Tips") != null) {
-            this.getLogger().info("Detect Tips Enabled!");
             Api.registerVariables("DCurrency", TipsVariable.class);
+            this.getLogger().info("Detect Tips Enabled!");
         }
 
         if (this.getServer().getPluginManager().getPlugin("RsNPC") != null) {
-            this.getLogger().info("Detect RsNPC Enabled!");
             VariableManage.addVariableV2("DCurrency", RsNPCVariable.class);
+            this.getLogger().info("Detect RsNPC Enabled!");
+        }
+
+        if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            for (String registeredCurrency : registeredCurrencies) {
+                PlaceholderAPI.getInstance().builder("{DCurrency_" + registeredCurrency + "_balance}", String.class)
+                        .visitorLoader(stringVisitorEntry -> String.valueOf(CurrencyMain.getProvider().getCurrencyBalance(stringVisitorEntry.getPlayer(), registeredCurrency)));
+            }
+            this.getLogger().info("Detect PlaceholderAPI Enabled!");
         }
         this.getLogger().info("DCurrency OnEnable");
     }

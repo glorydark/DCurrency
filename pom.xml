@@ -26,6 +26,10 @@
 
     <repositories>
         <repository>
+            <id>opencollab-repo-snapshot</id>
+            <url>https://repo.opencollab.dev/maven-snapshots</url>
+        </repository>
+        <repository>
             <id>repo-lanink-cn</id>
             <url>https://repo.lanink.cn/repository/maven-public/</url>
         </repository>
@@ -38,39 +42,40 @@
             <version>MOT-java8-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.smallaswater.tips</groupId>
             <artifactId>Tips</artifactId>
             <version>2.1.9</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.smallaswater.easysql</groupId>
             <artifactId>EasyMySQL</artifactId>
             <version>3.0.6</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.smallaswater</groupId>
             <artifactId>RsNPC</artifactId>
             <version>2.4.3</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.smallaswater.easysqlx</groupId>
             <artifactId>EasySQLX</artifactId>
             <version>4.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId> com.creeperface.nukkit.placeholderapi</groupId>
+            <artifactId>PlaceholderAPI</artifactId>
+            <version>1.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
