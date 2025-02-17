@@ -6,3 +6,5 @@ mysql:
   user: "user"
   password: "123123"
   database: "dcurrency"
+sqlite:
+  enable: false
