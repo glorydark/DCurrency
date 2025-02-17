@@ -51,7 +51,6 @@ public class CurrencyGiveCommand extends SubCommand {
                     String playerName = player.getName();
                     playerNames.add(playerName);
                     CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]), reason);
-                    CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2])));
                 }
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3], reason));
                 break;
@@ -65,12 +64,10 @@ public class CurrencyGiveCommand extends SubCommand {
                 String playerName = allPlayerCollection.toArray(new Player[0])[random.nextInt(0, allPlayerCollection.size())].getName();
                 CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]), reason);
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", playerName, strings[2], strings[3]));
-                CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2]), reason));
                 break;
             default:
                 CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
-                CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2]), reason));
                 break;
         }
         return true;

@@ -36,6 +36,7 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang("message_player_currencyReceive", currencyName, count, reason));
         }
+        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
     }
 
     public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason) {
@@ -48,6 +49,7 @@ public class CurrencyJsonProvider implements CurrencyProvider {
             if (player != null) {
                 player.sendMessage(CurrencyMain.getLang("message_player_currencySet", currencyName, count, reason));
             }
+            CurrencyMain.writeLog(CurrencyMain.getLang("log.command.set", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
         }
     }
 
@@ -61,7 +63,7 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang("message_player_currencyReduced", currencyName, count));
         }
-        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
+        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.take", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
         return true;
     }
 

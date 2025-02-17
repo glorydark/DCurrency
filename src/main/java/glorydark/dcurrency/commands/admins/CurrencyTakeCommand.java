@@ -33,7 +33,6 @@ public class CurrencyTakeCommand extends SubCommand {
         }
         CurrencyMain.getProvider().reduceCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);
         sender.sendMessage(CurrencyMain.getLang("message_op_takeCurrency", strings[1], strings[2], strings[3]));
-        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.take", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2]), reason));
         return true;
     }
 
