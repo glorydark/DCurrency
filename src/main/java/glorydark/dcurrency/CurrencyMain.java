@@ -61,12 +61,6 @@ public class CurrencyMain extends PluginBase {
         return registeredCurrencies;
     }
 
-    public static String getDate(long millis) {
-        Date date = new Date(millis);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-        return format.format(date);
-    }
-
     @Override
     public void onLoad() {
         this.getLogger().info("DCurrency OnLoad");
@@ -80,9 +74,8 @@ public class CurrencyMain extends PluginBase {
         date = getDateWithoutDetails(System.currentTimeMillis());
         pluginLogger = Logger.getLogger("dcurrency");
         new File(path + "/logs/").mkdirs();
-
         try {
-            fileHandler = new FileHandler(path + "/logs/" + getDate(System.currentTimeMillis()) + ".log", true);
+            fileHandler = new FileHandler(path + "/logs/" + getDateWithoutDetails(System.currentTimeMillis()) + ".log", true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
