@@ -42,7 +42,7 @@ public class CurrencyGiveCommand extends SubCommand {
         switch (strings[1]) {
             case "@a":
                 List<Player> allPlayerList = new ArrayList<>(Server.getInstance().getOnlinePlayers().values());
-                if (allPlayerList.size() == 0) {
+                if (allPlayerList.isEmpty()) {
                     sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_no_online_player"));
                     return true;
                 }
@@ -50,27 +50,27 @@ public class CurrencyGiveCommand extends SubCommand {
                 for (Player player : allPlayerList) {
                     String playerName = player.getName();
                     playerNames.add(playerName);
-                    CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]));
-                    CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2])));
+                    CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]), reason);
+                    CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2])));
                 }
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3], reason));
                 break;
             case "@r":
                 Collection<Player> allPlayerCollection = Server.getInstance().getOnlinePlayers().values();
-                if (allPlayerCollection.size() == 0) {
+                if (allPlayerCollection.isEmpty()) {
                     sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency_no_online_player"));
                     return true;
                 }
                 ThreadLocalRandom random = ThreadLocalRandom.current();
                 String playerName = allPlayerCollection.toArray(new Player[0])[random.nextInt(0, allPlayerCollection.size())].getName();
-                CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]));
+                CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]), reason);
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", playerName, strings[2], strings[3]));
-                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2]), reason));
+                CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", sender.getName(), playerName, strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(playerName, strings[2]), reason));
                 break;
             default:
-                CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]));
+                CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);
                 sender.sendMessage(CurrencyMain.getLang("message_op_giveCurrency", strings[1], strings[2], strings[3]));
-                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.give", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2]), reason));
+                CurrencyMain.writeLog(CurrencyMain.getLang("log.command.give", sender.getName(), strings[1], strings[2], String.valueOf(Double.parseDouble(strings[3])), CurrencyAPI.getCurrencyBalance(strings[1], strings[2]), reason));
                 break;
         }
         return true;

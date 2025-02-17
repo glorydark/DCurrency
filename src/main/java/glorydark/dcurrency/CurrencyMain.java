@@ -32,11 +32,10 @@ public class CurrencyMain extends PluginBase {
     protected static List<String> registeredCurrencies = new ArrayList<>();
     protected static CurrencyMain plugin;
     protected static CurrencyProvider provider;
-    protected static Logger pluginLogger;
 
-    public static Logger getPluginLogger() {
-        return pluginLogger;
-    }
+    protected static Logger pluginLogger;
+    protected static FileHandler fileHandler = null;
+    protected static String date;
 
     public static CurrencyProvider getProvider() {
         return provider;
@@ -78,12 +77,12 @@ public class CurrencyMain extends PluginBase {
         // initialize
         path = this.getDataFolder().getPath();
         plugin = this;
-        pluginLogger = Logger.getLogger("LotteryBox_" + UUID.randomUUID());
+        date = getDateWithoutDetails(System.currentTimeMillis());
+        pluginLogger = Logger.getLogger("dcurrency");
         new File(path + "/logs/").mkdirs();
 
-        FileHandler fileHandler;
         try {
-            fileHandler = new FileHandler(path + "/logs/" + getDate(System.currentTimeMillis()) + ".log");
+            fileHandler = new FileHandler(path + "/logs/" + getDate(System.currentTimeMillis()) + ".log", true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -183,5 +182,33 @@ public class CurrencyMain extends PluginBase {
         if (provider instanceof CurrencyJsonProvider) {
             ((CurrencyJsonProvider) provider).playerCurrencyCache.remove(event.getPlayer().getName());
         }
+    }
+
+    public static void writeLog(String info) {
+        if (pluginLogger == null) {
+            return;
+        }
+        String currentDate = getDateWithoutDetails(System.currentTimeMillis());
+        if (!date.equals(currentDate)) {
+            date = currentDate;
+            pluginLogger.removeHandler(fileHandler);
+            try {
+                fileHandler = new FileHandler(path + "/logs/" + date + ".log", true);
+                // Set a formatter to format log records
+                LoggerFormatter formatter = new LoggerFormatter();
+                fileHandler.setFormatter(formatter);
+                // Add the FileHandler to the logger
+                pluginLogger.addHandler(fileHandler);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        pluginLogger.info(info);
+    }
+
+    public static String getDateWithoutDetails(long millis) {
+        Date date = new Date(millis);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
+        return format.format(date);
     }
 }

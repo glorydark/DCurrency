@@ -47,7 +47,7 @@ public class CurrencyCreateCommand extends SubCommand {
                 config.set("registered_currencies", CurrencyMain.getRegisteredCurrencies());
                 config.save();
                 sender.sendMessage(CurrencyMain.getLang("message_default_moneyRegisteredSuccessfully", currencyName));
-                CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.create", sender.getName(), currencyName));
+                CurrencyMain.writeLog(CurrencyMain.getLang("log.command.create", sender.getName(), currencyName));
                 CurrencyProvider provider = CurrencyMain.getProvider();
                 if (provider instanceof CurrencyMysqlProvider) {
                     ((CurrencyMysqlProvider) provider).createTableIfAbsent(currencyName);

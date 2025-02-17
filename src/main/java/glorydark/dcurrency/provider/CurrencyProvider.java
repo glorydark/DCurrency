@@ -9,11 +9,23 @@ public interface CurrencyProvider {
 
     double getCurrencyBalance(String playerName, String currencyName, double defaultValue);
 
-    void addCurrencyBalance(String playerName, String currencyName, double count);
+    default void addCurrencyBalance(String playerName, String currencyName, double count) {
+        addCurrencyBalance(playerName, currencyName, count, "default");
+    }
 
-    void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip);
+    void addCurrencyBalance(String playerName, String currencyName, double count, String reason);
 
-    boolean reduceCurrencyBalance(String playerName, String currencyName, double count);
+    default void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip) {
+        setCurrencyBalance(playerName, currencyName, count, tip, "default");
+    }
+
+    void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason);
+
+    default boolean reduceCurrencyBalance(String playerName, String currencyName, double count) {
+        return reduceCurrencyBalance(playerName, currencyName, count, "default");
+    }
+
+    boolean reduceCurrencyBalance(String playerName, String currencyName, double count, String reason);
 
     Map<String, Object> getPlayerConfigs(String playerName);
 

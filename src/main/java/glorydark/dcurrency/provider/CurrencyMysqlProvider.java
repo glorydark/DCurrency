@@ -47,16 +47,16 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         return sqlDataList.get().getDouble(DATA_CURRENCY_VALUE);
     }
 
-    public void addCurrencyBalance(String playerName, String currencyName, double count) {
+    public void addCurrencyBalance(String playerName, String currencyName, double count, String reason) {
         double balance = add(getCurrencyBalance(playerName, currencyName, 0), count);
         setCurrencyBalance(playerName, currencyName, balance, false);
         Player player = Server.getInstance().getPlayer(playerName);
         if (player != null) {
-            player.sendMessage(CurrencyMain.getLang("message_player_currencyReceive", currencyName, count));
+            player.sendMessage(CurrencyMain.getLang("message_player_currencyReceive", currencyName, count, reason));
         }
     }
 
-    public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip) {
+    public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason) {
         SqlDataList<SqlData> sqlDataList = this.sqlManager.getData(currencyName, new SelectType(DATA_PLAYER_NAME, playerName));
         SqlData data = new SqlData().put(DATA_PLAYER_NAME, playerName).put(DATA_CURRENCY_VALUE, count);
         if (sqlDataList.isEmpty()) {
@@ -67,12 +67,12 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         if (tip) {
             Player player = Server.getInstance().getPlayer(playerName);
             if (player != null) {
-                player.sendMessage(CurrencyMain.getLang("message_player_currencySet", currencyName, count));
+                player.sendMessage(CurrencyMain.getLang("message_player_currencySet", currencyName, count, reason));
             }
         }
     }
 
-    public boolean reduceCurrencyBalance(String playerName, String currencyName, double count) {
+    public boolean reduceCurrencyBalance(String playerName, String currencyName, double count, String reason) {
         double balance = add(getCurrencyBalance(playerName, currencyName, 0), -count);
         if (balance < 0) {
             return false;
@@ -82,7 +82,7 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang("message_player_currencyReduced", currencyName, count));
         }
-        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName)));
+        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
         return true;
     }
 

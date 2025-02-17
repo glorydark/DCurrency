@@ -29,16 +29,16 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         return BigDecimal.valueOf(configSection.getDouble(currencyName, defaultValue)).doubleValue();
     }
 
-    public void addCurrencyBalance(String playerName, String currencyName, double count) {
+    public void addCurrencyBalance(String playerName, String currencyName, double count, String reason) {
         double balance = add(getCurrencyBalance(playerName, currencyName, 0), count);
         setCurrencyBalance(playerName, currencyName, balance, false);
         Player player = Server.getInstance().getPlayer(playerName);
         if (player != null) {
-            player.sendMessage(CurrencyMain.getLang("message_player_currencyReceive", currencyName, count));
+            player.sendMessage(CurrencyMain.getLang("message_player_currencyReceive", currencyName, count, reason));
         }
     }
 
-    public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip) {
+    public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason) {
         Config config = new Config(CurrencyMain.getPlugin().getPath() + "/players/" + playerName + ".json", Config.JSON);
         config.set(currencyName, count);
         playerCurrencyCache.put(playerName, config.getRootSection());
@@ -46,12 +46,12 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (tip) {
             Player player = Server.getInstance().getPlayer(playerName);
             if (player != null) {
-                player.sendMessage(CurrencyMain.getLang("message_player_currencySet", currencyName, count));
+                player.sendMessage(CurrencyMain.getLang("message_player_currencySet", currencyName, count, reason));
             }
         }
     }
 
-    public boolean reduceCurrencyBalance(String playerName, String currencyName, double count) {
+    public boolean reduceCurrencyBalance(String playerName, String currencyName, double count, String reason) {
         double balance = add(getCurrencyBalance(playerName, currencyName, 0), -count);
         if (balance < 0) {
             return false;
@@ -61,7 +61,7 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang("message_player_currencyReduced", currencyName, count));
         }
-        CurrencyMain.getPluginLogger().info(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName)));
+        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.reduce", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
         return true;
     }
 
