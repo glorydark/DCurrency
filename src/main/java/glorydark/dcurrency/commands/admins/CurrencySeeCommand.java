@@ -39,7 +39,7 @@ public class CurrencySeeCommand extends SubCommand {
         Map<String, Object> map = CurrencyMain.getProvider().getPlayerConfigs(strings[1]);
         int maxIndex = map.keySet().size();
         if (maxIndex == 0) {
-            sender.sendMessage(CurrencyMain.getLang("message_op_see_noCurrency"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_see_noCurrency"));
             return true;
         }
         int startIndex = 1;
@@ -47,19 +47,19 @@ public class CurrencySeeCommand extends SubCommand {
             startIndex = 1 + (Integer.parseInt(strings[2]) - 1) * 10;
             if (startIndex <= maxIndex) {
                 if (maxIndex % 10 != 0) {
-                    sender.sendMessage(CurrencyMain.getLang("message_op_see_startText", strings[1], strings[2], (maxIndex / 10 + 1)));
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_see_startText", strings[1], strings[2], (maxIndex / 10 + 1)));
                 } else {
-                    sender.sendMessage(CurrencyMain.getLang("message_op_see_startText", strings[1], strings[2], (maxIndex / 10)));
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_see_startText", strings[1], strings[2], (maxIndex / 10)));
                 }
             } else {
-                sender.sendMessage(CurrencyMain.getLang("message_op_see_pageNotFound"));
+                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_see_pageNotFound"));
                 return true;
             }
         } else {
             if (maxIndex % 10 != 0) {
-                sender.sendMessage(CurrencyMain.getLang("message_op_see_startText", strings[1], 1, (maxIndex / 10 + 1)));
+                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_see_startText", strings[1], 1, (maxIndex / 10 + 1)));
             } else {
-                sender.sendMessage(CurrencyMain.getLang("message_op_see_startText", strings[1], 1, (maxIndex / 10)));
+                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_see_startText", strings[1], 1, (maxIndex / 10)));
             }
         }
         int PageMaxIndex = startIndex + 9;

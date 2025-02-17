@@ -23,7 +23,7 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
     protected SqlManager sqlManager;
 
     public CurrencyMysqlProvider(String host, int port, String user, String password, String database) throws MySqlLoginException {
-        this.sqlManager = new SqlManager(CurrencyMain.getPlugin(), new UserData(
+        this.sqlManager = new SqlManager(CurrencyMain.getInstance(), new UserData(
                 user,
                 password,
                 host,
@@ -52,9 +52,9 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         setCurrencyBalance(playerName, currencyName, balance, false);
         Player player = Server.getInstance().getPlayer(playerName);
         if (player != null) {
-            player.sendMessage(CurrencyMain.getLang("message_player_currencyReceive", currencyName, count, reason));
+            player.sendMessage(CurrencyMain.getLang().getTranslation("message_player_currencyReceive", currencyName, count, reason));
         }
-        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.add", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
+        CurrencyMain.writeLog(CurrencyMain.getLang().getTranslation("log.command.add", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
     }
 
     public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason) {
@@ -68,9 +68,9 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         if (tip) {
             Player player = Server.getInstance().getPlayer(playerName);
             if (player != null) {
-                player.sendMessage(CurrencyMain.getLang("message_player_currencySet", currencyName, count, reason));
+                player.sendMessage(CurrencyMain.getLang().getTranslation("message_player_currencySet", currencyName, count, reason));
             }
-            CurrencyMain.writeLog(CurrencyMain.getLang("log.command.set", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
+            CurrencyMain.writeLog(CurrencyMain.getLang().getTranslation("log.command.set", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
         }
     }
 
@@ -82,9 +82,9 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         setCurrencyBalance(playerName, currencyName, balance, false);
         Player player = Server.getInstance().getPlayer(playerName);
         if (player != null) {
-            player.sendMessage(CurrencyMain.getLang("message_player_currencyReduced", currencyName, count));
+            player.sendMessage(CurrencyMain.getLang().getTranslation("message_player_currencyReduced", currencyName, count));
         }
-        CurrencyMain.writeLog(CurrencyMain.getLang("log.command.take", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
+        CurrencyMain.writeLog(CurrencyMain.getLang().getTranslation("log.command.take", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
         return true;
     }
 

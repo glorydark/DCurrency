@@ -2,22 +2,26 @@ package glorydark.dcurrency.provider;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.ConfigSection;
+import com.smallaswater.easysqlx.sqlite.SQLiteHelper;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
+import glorydark.dcurrency.utils.CurrencyData;
 
 import java.io.File;
-import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CurrencyJsonProvider implements CurrencyProvider {
+public class CurrencySqliteProvider implements CurrencyProvider {
 
-    public Map<String, ConfigSection> playerCurrencyCache = new LinkedHashMap<>();
+    protected final String COLUMN_PLAYER = "player";
+    protected SQLiteHelper sqLiteHelper;
 
-    public CurrencyJsonProvider() {
-
+    public CurrencySqliteProvider() throws SQLException, ClassNotFoundException {
+        this.sqLiteHelper = new SQLiteHelper(CurrencyMain.getInstance().getPath() + File.separator + "currency.db");
+        for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
+            createTableIfAbsent(registeredCurrency);
+        }
     }
 
     public double getCurrencyBalance(String playerName, String currencyName) {
@@ -25,8 +29,7 @@ public class CurrencyJsonProvider implements CurrencyProvider {
     }
 
     public double getCurrencyBalance(String playerName, String currencyName, double defaultValue) {
-        ConfigSection configSection = getPlayerConfigWithoutCreate(playerName);
-        return BigDecimal.valueOf(configSection.getDouble(currencyName, defaultValue)).doubleValue();
+        return this.sqLiteHelper.get(currencyName, COLUMN_PLAYER, playerName, CurrencyData.class).getBalance();
     }
 
     public void addCurrencyBalance(String playerName, String currencyName, double count, String reason) {
@@ -36,14 +39,14 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (player != null) {
             player.sendMessage(CurrencyMain.getLang().getTranslation("message_player_currencyReceive", currencyName, count, reason));
         }
-        CurrencyMain.writeLog(CurrencyMain.getLang().getTranslation("log.command.give", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
+        CurrencyMain.writeLog(CurrencyMain.getLang().getTranslation("log.command.add", "console", playerName, currencyName, count, CurrencyAPI.getCurrencyBalance(playerName, currencyName), reason));
     }
 
     public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason) {
-        Config config = new Config(CurrencyMain.getInstance().getPath() + "/players/" + playerName + ".json", Config.JSON);
-        config.set(currencyName, count);
-        playerCurrencyCache.put(playerName, config.getRootSection());
-        config.save();
+        CurrencyData data = new CurrencyData();
+        data.setPlayer(playerName);
+        data.setBalance(getCurrencyBalance(playerName, currencyName) + count);
+        sqLiteHelper.set(currencyName, COLUMN_PLAYER, currencyName, data);
         if (tip) {
             Player player = Server.getInstance().getPlayer(playerName);
             if (player != null) {
@@ -67,22 +70,21 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         return true;
     }
 
-    public ConfigSection getPlayerConfigWithoutCreate(String playerName) {
-        if (playerCurrencyCache.containsKey(playerName)) {
-            return playerCurrencyCache.get(playerName);
-        } else {
-            ConfigSection section = getPlayerConfigs(playerName);
-            playerCurrencyCache.put(playerName, section);
-            return section;
+    public Map<String, Object> getPlayerConfigs(String playerName) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
+            double balance = getCurrencyBalance(playerName, registeredCurrency);
+            if (balance > 0) {
+                map.put(registeredCurrency, balance);
+            }
         }
+        return map;
     }
 
-    public ConfigSection getPlayerConfigs(String playerName) {
-        File file = new File(CurrencyMain.getInstance().getPath() + "/players/" + playerName + ".json");
-        if (!file.exists()) {
-            return new ConfigSection();
+    public void createTableIfAbsent(String currencyName) {
+        if (!this.sqLiteHelper.exists(currencyName)) {
+            this.sqLiteHelper.addTable(currencyName,
+                    SQLiteHelper.DBTable.asDbTable(CurrencyData.class));
         }
-        Config config = new Config(file, Config.JSON);
-        return config.getRootSection();
     }
 }
