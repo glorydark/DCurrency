@@ -15,6 +15,8 @@ import glorydark.dcurrency.logger.LoggerFormatter;
 import glorydark.dcurrency.provider.CurrencyJsonProvider;
 import glorydark.dcurrency.provider.CurrencyMysqlProvider;
 import glorydark.dcurrency.provider.CurrencyProvider;
+import glorydark.dcurrency.provider.CurrencySqliteProvider;
+import glorydark.dcurrency.utils.Language;
 import tip.utils.Api;
 import tip.utils.variables.BaseVariable;
 
@@ -27,7 +29,7 @@ import java.util.logging.Logger;
 
 public class CurrencyMain extends PluginBase {
 
-    public static Map<String, Object> lang = new HashMap<>();
+    public static Language lang = new Language();
     protected static String path;
     protected static List<String> registeredCurrencies = new ArrayList<>();
     protected static CurrencyMain plugin;
@@ -36,30 +38,6 @@ public class CurrencyMain extends PluginBase {
     protected static Logger pluginLogger;
     protected static FileHandler fileHandler = null;
     protected static String date;
-
-    public static CurrencyProvider getProvider() {
-        return provider;
-    }
-
-    public static CurrencyMain getPlugin() {
-        return plugin;
-    }
-
-    public static String getLang(String string, Object... params) {
-        if (lang.containsKey(string)) {
-            String out = (String) lang.get(string);
-            for (int i = 1; i <= params.length; i++) {
-                out = out.replace("%" + i + "%", String.valueOf(params[i - 1]));
-            }
-            return out;
-        } else {
-            return "Key Not Found!";
-        }
-    }
-
-    public static List<String> getRegisteredCurrencies() {
-        return registeredCurrencies;
-    }
 
     @Override
     public void onLoad() {
@@ -84,41 +62,12 @@ public class CurrencyMain extends PluginBase {
         pluginLogger.setUseParentHandlers(false);
         //load language config
         this.saveDefaultConfig();
-        this.saveResource("lang.properties", false);
+        this.saveResource("languages/zh_CN.properties", false);
+        this.saveResource("languages/en_US.properties", false);
+        this.loadAll();
 
-        lang = new Config(path + "/lang.properties", Config.PROPERTIES).getAll();
-
-        Config config = new Config(path + "/config.yml", Config.YAML);
-        registeredCurrencies = new ArrayList<>(config.getStringList("registered_currencies"));
-        if (config.exists("mysql") && config.getBoolean("mysql.enable", false)) {
-            ConfigSection section = config.getSection("mysql");
-            String host = section.getString("host");
-            int port = section.getInt("port");
-            String database = section.getString("database");
-            String user = section.getString("user");
-            String password = section.getString("password");
-            try {
-                provider = new CurrencyMysqlProvider(host, port, user, password, database);
-                this.getLogger().info(getLang("tips_mysql_enabled"));
-            } catch (Exception e) {
-                this.getLogger().info(getLang("tips_mysql_disabled"));
-                throw new RuntimeException(e);
-            }
-        } else {
-            this.getLogger().info(getLang("tips_json_enabled"));
-            provider = new CurrencyJsonProvider();
-        }
-        // create folder
-        File dic = new File(this.getDataFolder() + "/players/");
-        if (!dic.exists()) {
-            if (!dic.mkdirs()) {
-                this.getLogger().info(getLang("tips_createFolder_fail"));
-                this.setEnabled(false);
-                return;
-            }
-        }
         // register Commands
-        this.getServer().getCommandMap().register("", new CommandsExecutor(CurrencyMain.getLang("command_main")));
+        this.getServer().getCommandMap().register("", new CommandsExecutor(lang.getTranslation("command_main")));
         // loading functions
         if (this.getServer().getPluginManager().getPlugin("Tips") != null) {
             this.getLogger().info("Detect Tips Enabled!");
@@ -132,6 +81,69 @@ public class CurrencyMain extends PluginBase {
         this.getLogger().info("DCurrency OnEnable");
     }
 
+    public void loadAll() {
+        Config config = new Config(path + File.separator + "config.yml", Config.YAML);
+        lang.setDefaultLanguage(config.getString("default_language", "en_US"));
+        lang.addLanguage(new File(path + File.separator + "languages" + File.separator + "zh_CN.properties"));
+        lang.addLanguage(new File(path + File.separator + "languages" + File.separator + "en_US.properties"));
+        registeredCurrencies = new ArrayList<>(config.getStringList("registered_currencies"));
+        if (config.exists("mysql") && config.getBoolean("mysql.enable", false)) {
+            ConfigSection section = config.getSection("mysql");
+            String host = section.getString("host");
+            int port = section.getInt("port");
+            String database = section.getString("database");
+            String user = section.getString("user");
+            String password = section.getString("password");
+            try {
+                provider = new CurrencyMysqlProvider(host, port, user, password, database);
+                this.getLogger().info(lang.getTranslation("tips_mysql_enabled"));
+            } catch (Exception e) {
+                this.getLogger().info(lang.getTranslation("tips_mysql_disabled"));
+                throw new RuntimeException(e);
+            }
+        } else if (config.exists("sqlite") && config.getBoolean("sqlite.enable", false)) {
+            try {
+                provider = new CurrencySqliteProvider();
+                this.getLogger().info(lang.getTranslation("tips_sqlite_enabled"));
+            } catch (Exception e) {
+                this.getLogger().info(lang.getTranslation("tips_sqlite_disabled"));
+                throw new RuntimeException(e);
+            }
+        } else {
+            this.getLogger().info(lang.getTranslation("tips_json_enabled"));
+            provider = new CurrencyJsonProvider();
+        }
+        // create folder
+        File dic = new File(this.getDataFolder() + "/players/");
+        if (!dic.exists()) {
+            if (!dic.mkdirs()) {
+                this.getLogger().info(lang.getTranslation("tips_createFolder_fail"));
+                this.setEnabled(false);
+            }
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        this.getLogger().info("DCurrency OnDisable");
+    }
+
+    public static CurrencyProvider getProvider() {
+        return provider;
+    }
+
+    public static CurrencyMain getInstance() {
+        return plugin;
+    }
+
+    public static List<String> getRegisteredCurrencies() {
+        return registeredCurrencies;
+    }
+
+    public static Language getLang() {
+        return lang;
+    }
+
     @Override
     public PluginLogger getLogger() {
         return super.getLogger();
@@ -139,11 +151,6 @@ public class CurrencyMain extends PluginBase {
 
     public String getPath() {
         return path;
-    }
-
-    @Override
-    public void onDisable() {
-        this.getLogger().info("DCurrency OnDisable");
     }
 
     public static class TipsVariable extends BaseVariable {

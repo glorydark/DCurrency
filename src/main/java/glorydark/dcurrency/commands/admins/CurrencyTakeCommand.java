@@ -28,11 +28,11 @@ public class CurrencyTakeCommand extends SubCommand {
             reason = strings[4];
         }
         if (!CurrencyMain.getRegisteredCurrencies().contains(strings[2])) {
-            sender.sendMessage(CurrencyMain.getLang("message_op_unregistered_currencies", strings[2]));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_unregistered_currencies", strings[2]));
             return false;
         }
         CurrencyMain.getProvider().reduceCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);
-        sender.sendMessage(CurrencyMain.getLang("message_op_takeCurrency", strings[1], strings[2], strings[3]));
+        sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_takeCurrency", strings[1], strings[2], strings[3]));
         return true;
     }
 

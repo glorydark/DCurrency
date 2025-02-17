@@ -28,7 +28,7 @@ public class CurrencySetCommand extends SubCommand {
             reason = strings[4];
         }
         CurrencyMain.getProvider().setCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), true, reason);
-        sender.sendMessage(CurrencyMain.getLang("message_op_setCurrency", strings[1], strings[2], strings[3]));
+        sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_setCurrency", strings[1], strings[2], strings[3]));
         return true;
     }
 

@@ -35,7 +35,7 @@ public class CurrencyTopCommand extends SubCommand {
             page = Integer.parseInt(strings[2]);
         }
         Map<String, Double> map = new HashMap<>();
-        File file = new File(CurrencyMain.getPlugin().getPath() + "/players/");
+        File file = new File(CurrencyMain.getInstance().getPath() + "/players/");
         for (File json : Objects.requireNonNull(file.listFiles())) {
             Config config = new Config(json, Config.JSON);
             map.put(json.getName().substring(0, json.getName().lastIndexOf(".")), config.getDouble(key, 0d));
@@ -49,10 +49,10 @@ public class CurrencyTopCommand extends SubCommand {
         if (!results.isEmpty()) {
             int startIndex = (page - 1) * 10; // 0
             int endIndex = Math.min(results.size() - 1, startIndex + 9); // 0
-            sender.sendMessage(CurrencyMain.getLang("message.op.top.title", key, page, results.size() / page + ((results.size() % page > 0)? 1 : 0), total));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message.op.top.title", key, page, results.size() / page + ((results.size() % page > 0)? 1 : 0), total));
             for (int i = startIndex; i <= endIndex; i++) {
                 Map.Entry<String, Double> result = results.get(i);
-                sender.sendMessage(CurrencyMain.getLang("message.op.top.entry", i + 1, result.getKey(), result.getValue()));
+                sender.sendMessage(CurrencyMain.getLang().getTranslation("message.op.top.entry", i + 1, result.getKey(), result.getValue()));
             }
         } else {
             sender.sendMessage("Short of data!");

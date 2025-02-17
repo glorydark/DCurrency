@@ -40,14 +40,14 @@ public class CurrencyCreateCommand extends SubCommand {
         if (strings.length == 2) {
             String currencyName = strings[1];
             if (CurrencyMain.getRegisteredCurrencies().contains(currencyName)) {
-                sender.sendMessage(CurrencyMain.getLang("message_default_moneyAlreadyRegistered", currencyName));
+                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_default_moneyAlreadyRegistered", currencyName));
             } else {
                 CurrencyMain.getRegisteredCurrencies().add(currencyName);
-                Config config = new Config(CurrencyMain.getPlugin().getPath() + "/config.yml", Config.YAML);
+                Config config = new Config(CurrencyMain.getInstance().getPath() + "/config.yml", Config.YAML);
                 config.set("registered_currencies", CurrencyMain.getRegisteredCurrencies());
                 config.save();
-                sender.sendMessage(CurrencyMain.getLang("message_default_moneyRegisteredSuccessfully", currencyName));
-                CurrencyMain.writeLog(CurrencyMain.getLang("log.command.create", sender.getName(), currencyName));
+                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_default_moneyRegisteredSuccessfully", currencyName));
+                CurrencyMain.writeLog(CurrencyMain.getLang().getTranslation("log.command.create", sender.getName(), currencyName));
                 CurrencyProvider provider = CurrencyMain.getProvider();
                 if (provider instanceof CurrencyMysqlProvider) {
                     ((CurrencyMysqlProvider) provider).createTableIfAbsent(currencyName);
