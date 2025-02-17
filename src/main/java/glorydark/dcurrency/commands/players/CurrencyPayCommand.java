@@ -39,20 +39,20 @@ public class CurrencyPayCommand extends SubCommand {
         }
         Player player = Server.getInstance().getPlayer(strings[1]);
         if (player == null || !player.isOnline()) {
-            sender.sendMessage(CurrencyMain.getLang("message_default_playerNotFound"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message_default_playerNotFound"));
             return true;
         }
         String currencyName = strings[2];
         double count = Double.parseDouble(strings[3]);
         if (Double.isInfinite(count) || Double.isNaN(count)) {
-            sender.sendMessage(CurrencyMain.getLang("message_player_general_unsupported_value"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message_player_general_unsupported_value"));
             return true;
         }
         if (CurrencyMain.getProvider().reduceCurrencyBalance(sender.getName(), currencyName, count)) {
             CurrencyMain.getProvider().addCurrencyBalance(player.getName(), currencyName, count);
-            sender.sendMessage(CurrencyMain.getLang("message_player_pay_success"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message_player_pay_success"));
         } else {
-            sender.sendMessage(CurrencyMain.getLang("message_player_pay_noEnoughCurrency"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message_player_pay_noEnoughCurrency"));
         }
         return true;
     }

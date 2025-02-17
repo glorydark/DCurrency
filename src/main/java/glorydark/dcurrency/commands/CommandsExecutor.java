@@ -25,19 +25,19 @@ public class CommandsExecutor extends Command {
     public CommandsExecutor(String name) {
         super(name);
         //Admins
-        loadSubCommand(new CurrencyGiveCommand(CurrencyMain.getLang("command_minor_give"), CurrencyMain.getLang("help_give")));
-        loadSubCommand(new CurrencySeeCommand(CurrencyMain.getLang("command_minor_see"), CurrencyMain.getLang("help_see")));
-        loadSubCommand(new CurrencySetCommand(CurrencyMain.getLang("command_minor_set"), CurrencyMain.getLang("help_set")));
-        // loadSubCommand(new CurrencyAdminRedeemCommand(CurrencyMain.getLang("command_minor_redeem_admin"), CurrencyMain.getLang("help_redeem_admin")));
-        loadSubCommand(new CurrencyCreateCommand(CurrencyMain.getLang("command_minor_create"), CurrencyMain.getLang("help_create")));
+        loadSubCommand(new CurrencyGiveCommand(CurrencyMain.getLang().getTranslation("command_minor_give"), CurrencyMain.getLang().getTranslation("help_give")));
+        loadSubCommand(new CurrencySeeCommand(CurrencyMain.getLang().getTranslation("command_minor_see"), CurrencyMain.getLang().getTranslation("help_see")));
+        loadSubCommand(new CurrencySetCommand(CurrencyMain.getLang().getTranslation("command_minor_set"), CurrencyMain.getLang().getTranslation("help_set")));
+        // loadSubCommand(new CurrencyAdminRedeemCommand(CurrencyMain.getLang().getTranslation("command_minor_redeem_admin"), CurrencyMain.getLang().getTranslation("help_redeem_admin")));
+        loadSubCommand(new CurrencyCreateCommand(CurrencyMain.getLang().getTranslation("command_minor_create"), CurrencyMain.getLang().getTranslation("help_create")));
         //Players
-        loadSubCommand(new CurrencyMeCommand(CurrencyMain.getLang("command_minor_me"), CurrencyMain.getLang("help_me")));
-        loadSubCommand(new CurrencyPayCommand(CurrencyMain.getLang("command_minor_pay"), CurrencyMain.getLang("help_pay")));
-        // loadSubCommand(new CurrencyRedeemCommand(CurrencyMain.getLang("command_minor_redeem"), CurrencyMain.getLang("help_redeem")));
-        loadSubCommand(new CurrencyAllCommand(CurrencyMain.getLang("command_minor_allMoney"), CurrencyMain.getLang("help_all_money")));
-        loadSubCommand(new CurrencyTopCommand(CurrencyMain.getLang("command_minor_top"), CurrencyMain.getLang("help_top")));
-        loadSubCommand(new CurrencyClearAllCommand(CurrencyMain.getLang("command_minor_clear_all"), CurrencyMain.getLang("help_clear_all")));
-        loadSubCommand(new CurrencyTakeCommand(CurrencyMain.getLang("command_minor_take"), CurrencyMain.getLang("help_take")));
+        loadSubCommand(new CurrencyMeCommand(CurrencyMain.getLang().getTranslation("command_minor_me"), CurrencyMain.getLang().getTranslation("help_me")));
+        loadSubCommand(new CurrencyPayCommand(CurrencyMain.getLang().getTranslation("command_minor_pay"), CurrencyMain.getLang().getTranslation("help_pay")));
+        // loadSubCommand(new CurrencyRedeemCommand(CurrencyMain.getLang().getTranslation("command_minor_redeem"), CurrencyMain.getLang().getTranslation("help_redeem")));
+        loadSubCommand(new CurrencyAllCommand(CurrencyMain.getLang().getTranslation("command_minor_allMoney"), CurrencyMain.getLang().getTranslation("help_all_money")));
+        loadSubCommand(new CurrencyTopCommand(CurrencyMain.getLang().getTranslation("command_minor_top"), CurrencyMain.getLang().getTranslation("help_top")));
+        loadSubCommand(new CurrencyClearAllCommand(CurrencyMain.getLang().getTranslation("command_minor_clear_all"), CurrencyMain.getLang().getTranslation("help_clear_all")));
+        loadSubCommand(new CurrencyTakeCommand(CurrencyMain.getLang().getTranslation("command_minor_take"), CurrencyMain.getLang().getTranslation("help_take")));
     }
 
     private void loadSubCommand(SubCommand cmd) {
@@ -50,16 +50,16 @@ public class CommandsExecutor extends Command {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(CurrencyMain.getLang("help_title"));
-        sender.sendMessage(CurrencyMain.getLang("help_me"));
-        sender.sendMessage(CurrencyMain.getLang("help_pay"));
+        sender.sendMessage(CurrencyMain.getLang().getTranslation("help_title"));
+        sender.sendMessage(CurrencyMain.getLang().getTranslation("help_me"));
+        sender.sendMessage(CurrencyMain.getLang().getTranslation("help_pay"));
         if (sender.isOp() || !sender.isPlayer()) {
-            sender.sendMessage(CurrencyMain.getLang("help_give"));
-            sender.sendMessage(CurrencyMain.getLang("help_set"));
-            sender.sendMessage(CurrencyMain.getLang("help_see"));
-            sender.sendMessage(CurrencyMain.getLang("help_all_money"));
-            sender.sendMessage(CurrencyMain.getLang("help_create"));
-            sender.sendMessage(CurrencyMain.getLang("help_top"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("help_give"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("help_set"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("help_see"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("help_all_money"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("help_create"));
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("help_top"));
         }
     }
 
@@ -78,7 +78,7 @@ public class CommandsExecutor extends Command {
                     }
                     return true;
                 } else {
-                    sender.sendMessage(CurrencyMain.getLang("message_default_noPermission"));
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_default_noPermission"));
                     return false;
                 }
             } else {

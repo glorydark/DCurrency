@@ -1,4 +1,5 @@
 registered_currencies: []
+default_language: en_US
 mysql:
   enable: false
   host: "0.0.0.0"

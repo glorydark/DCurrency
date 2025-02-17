@@ -30,14 +30,14 @@ public class CurrencyAllCommand extends SubCommand {
             return false;
         }
         HashMap<String, Double> map = new HashMap<>();
-        File file = new File(CurrencyMain.getPlugin().getPath() + "/players/");
+        File file = new File(CurrencyMain.getInstance().getPath() + "/players/");
         for (File json : Objects.requireNonNull(file.listFiles())) {
             Config config = new Config(json, Config.JSON);
             for (String key : config.getKeys(false)) {
                 map.put(key, add(map.getOrDefault(key, 0.0), config.getDouble(key)));
             }
         }
-        sender.sendMessage(CurrencyMain.getLang("message_op_seeAll_title"));
+        sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_seeAll_title"));
         map.forEach((key, value) -> sender.sendMessage(key + ":" + value));
         return true;
     }
