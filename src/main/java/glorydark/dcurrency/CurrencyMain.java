@@ -149,6 +149,10 @@ public class CurrencyMain extends PluginBase {
         return registeredCurrencies;
     }
 
+    public static void setRegisteredCurrencies(List<String> registeredCurrencies) {
+        CurrencyMain.registeredCurrencies = registeredCurrencies;
+    }
+
     public static Language getLang() {
         return lang;
     }

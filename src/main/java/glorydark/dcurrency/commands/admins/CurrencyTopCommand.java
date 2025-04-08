@@ -40,8 +40,15 @@ public class CurrencyTopCommand extends SubCommand {
             Map<String, Double> map = new HashMap<>();
             File file = new File(CurrencyMain.getInstance().getPath() + "/players/");
             for (File json : Objects.requireNonNull(file.listFiles())) {
-                Config config = new Config(json, Config.JSON);
-                map.put(json.getName().substring(0, json.getName().lastIndexOf(".")), config.getDouble(key, 0d));
+                if (json.isFile() && json.getName().endsWith(".json")) {
+                    try {
+                        Config config = new Config(json, Config.JSON);
+                        map.put(json.getName().substring(0, json.getName().lastIndexOf(".")), config.getDouble(key, 0d));
+                    } catch (Throwable t) {
+                        CurrencyMain.getInstance().getLogger().error("Found a broken file: " + json);
+                        t.printStackTrace();
+                    }
+                }
             }
             List<Map.Entry<String, Double>> results = map.entrySet().stream().sorted(Comparator.comparingDouble(Map.Entry::getValue)).collect(Collectors.toList());
             Collections.reverse(results);
