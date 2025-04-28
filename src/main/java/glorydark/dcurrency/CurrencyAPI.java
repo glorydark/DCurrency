@@ -1,13 +1,50 @@
 package glorydark.dcurrency;
 
 import cn.nukkit.Player;
+import cn.nukkit.utils.Config;
+import glorydark.dcurrency.provider.CurrencyJsonProvider;
 
-import java.util.Map;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class CurrencyAPI {
 
     public static Map<String, Object> getPlayerConfigs(String playerName) {
         return CurrencyMain.getProvider().getPlayerConfigs(playerName);
+    }
+
+    public static List<String> getAllPlayers() {
+        if (CurrencyMain.getProvider() instanceof CurrencyJsonProvider) {
+            List<String> results = new ArrayList<>();
+            File file = new File(CurrencyMain.getInstance().getPath() + "/players/");
+            for (File json : Objects.requireNonNull(file.listFiles())) {
+                results.add(json.getName().substring(0, json.getName().lastIndexOf(".")));
+            }
+            return results;
+        } else {
+            CurrencyMain.getInstance().getLogger().error("Mysql Provider is not allowed to use getAllPlayers()");
+            return new ArrayList<>();
+        }
+    }
+
+    public static Map<String, Double> getPlayerAllCurrencyData(String currencyName) {
+        if (CurrencyMain.getProvider() instanceof CurrencyJsonProvider) {
+            Map<String, Double> map = new HashMap<>();
+            File file = new File(CurrencyMain.getInstance().getPath() + "/players/");
+            for (File json : Objects.requireNonNull(file.listFiles())) {
+                Config config = new Config(json, Config.JSON);
+                map.put(json.getName().substring(0, json.getName().lastIndexOf(".")), config.getDouble(currencyName));
+            }
+            return map;
+        } else {
+            CurrencyMain.getInstance().getLogger().error("Mysql Provider is not allowed to use getAllPlayers()");
+            return new LinkedHashMap<>();
+        }
+    }
+
+    public static double add(double n1, double n2) {
+        return new BigDecimal(n1).add(new BigDecimal(n2)).doubleValue();
     }
 
     // Offline Usages
