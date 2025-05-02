@@ -6,6 +6,7 @@ import cn.nukkit.command.CommandSender;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
+import glorydark.dcurrency.provider.CurrencyJsonProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +41,14 @@ public class CurrencyGiveCommand extends SubCommand {
             return false;
         }
         switch (strings[1]) {
+            case "@each":
+                if (CurrencyMain.getProvider() instanceof CurrencyJsonProvider) {
+                    List<String> players = CurrencyAPI.getAllPlayers();
+                    for (String player : players) {
+                        CurrencyMain.getProvider().addCurrencyBalance(player, strings[2], Double.parseDouble(strings[3]), reason);
+                    }
+                }
+                break;
             case "@a":
                 List<Player> allPlayerList = new ArrayList<>(Server.getInstance().getOnlinePlayers().values());
                 if (allPlayerList.isEmpty()) {
@@ -66,6 +75,10 @@ public class CurrencyGiveCommand extends SubCommand {
                 sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", playerName, strings[2], strings[3]));
                 break;
             default:
+                if (!Server.getInstance().lookupName(strings[1]).isPresent()) {
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message.default.player_not_found", strings[1]));
+                    return false;
+                }
                 CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);
                 sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", strings[1], strings[2], strings[3]));
                 break;

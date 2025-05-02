@@ -1,5 +1,6 @@
 package glorydark.dcurrency.commands.admins;
 
+import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
@@ -29,6 +30,10 @@ public class CurrencyTakeCommand extends SubCommand {
         }
         if (!CurrencyMain.getRegisteredCurrencies().contains(strings[2])) {
             sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_unregistered_currencies", strings[2]));
+            return false;
+        }
+        if (!Server.getInstance().lookupName(strings[1]).isPresent()) {
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message.default.player_not_found", strings[1]));
             return false;
         }
         CurrencyMain.getProvider().reduceCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);

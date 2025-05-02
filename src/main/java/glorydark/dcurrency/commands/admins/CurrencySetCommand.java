@@ -1,5 +1,6 @@
 package glorydark.dcurrency.commands.admins;
 
+import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
@@ -21,6 +22,10 @@ public class CurrencySetCommand extends SubCommand {
             return false;
         }
         if (strings.length < 4) {
+            return false;
+        }
+        if (!Server.getInstance().lookupName(strings[1]).isPresent()) {
+            sender.sendMessage(CurrencyMain.getLang().getTranslation("message.default.player_not_found", strings[1]));
             return false;
         }
         String reason = "default";
