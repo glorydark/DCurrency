@@ -82,7 +82,13 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         if (!file.exists()) {
             return new ConfigSection();
         }
-        Config config = new Config(file, Config.JSON);
-        return config.getRootSection();
+        try {
+            Config config = new Config(file, Config.JSON);
+            return config.getRootSection();
+        } catch (Exception e) {
+            CurrencyMain.getInstance().getLogger().error("Found wrong player data: " + file);
+            e.printStackTrace();
+            return new ConfigSection();
+        }
     }
 }
