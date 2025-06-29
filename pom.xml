@@ -6,7 +6,7 @@
 
     <groupId>glorydark.nukkit</groupId>
     <artifactId>DCurrency</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 
     <distributionManagement>
         <snapshotRepository>

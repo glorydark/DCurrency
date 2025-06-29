@@ -23,6 +23,8 @@ import tip.utils.variables.BaseVariable;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.FileHandler;
@@ -175,7 +177,7 @@ public class CurrencyMain extends PluginBase {
         @Override
         public void strReplace() {
             for (String currency : registeredCurrencies) {
-                this.addStrReplaceString("{DCurrency_balance_" + currency + "}", String.valueOf(provider.getCurrencyBalance(player.getName(), currency)));
+                this.addStrReplaceString("{DCurrency_balance_" + currency + "}", String.valueOf(getDouble(provider.getCurrencyBalance(player.getName(), currency), 2)));
             }
         }
     }
@@ -185,7 +187,7 @@ public class CurrencyMain extends PluginBase {
         @Override
         public void onUpdate(Player player, RsNpcConfig rsNpcConfig) {
             for (String currency : registeredCurrencies) {
-                this.addVariable("{DCurrency_balance_" + currency + "}", String.valueOf(provider.getCurrencyBalance(player.getName(), currency)));
+                this.addVariable("{DCurrency_balance_" + currency + "}", String.valueOf(getDouble(provider.getCurrencyBalance(player.getName(), currency), 2)));
             }
         }
     }
@@ -223,5 +225,13 @@ public class CurrencyMain extends PluginBase {
         Date date = new Date(millis);
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日");
         return format.format(date);
+    }
+
+    public static double getDouble(double v, int scale) {
+        return getDouble(v, scale, RoundingMode.FLOOR);
+    }
+
+    public static double getDouble(double v, int scale, RoundingMode roundingMode) {
+        return BigDecimal.valueOf(v).setScale(scale, roundingMode).doubleValue();
     }
 }
