@@ -5,11 +5,12 @@ import cn.nukkit.Server;
 import com.smallaswater.easysqlx.sqlite.SQLiteHelper;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
-import glorydark.dcurrency.utils.CurrencyData;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class CurrencySqliteProvider implements CurrencyProvider {
@@ -17,10 +18,14 @@ public class CurrencySqliteProvider implements CurrencyProvider {
     protected final String COLUMN_PLAYER = "player";
     protected SQLiteHelper sqLiteHelper;
 
-    public CurrencySqliteProvider() throws SQLException, ClassNotFoundException {
-        this.sqLiteHelper = new SQLiteHelper(CurrencyMain.getInstance().getPath() + File.separator + "currency.db");
-        for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
-            createTableIfAbsent(registeredCurrency);
+    public CurrencySqliteProvider() throws SQLException {
+        try {
+            this.sqLiteHelper = new SQLiteHelper(CurrencyMain.getInstance().getPath() + File.separator + "currency.db");
+            for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
+                this.createTableIfAbsent(registeredCurrency);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -29,7 +34,17 @@ public class CurrencySqliteProvider implements CurrencyProvider {
     }
 
     public double getCurrencyBalance(String playerName, String currencyName, double defaultValue) {
-        return this.sqLiteHelper.get(currencyName, COLUMN_PLAYER, playerName, CurrencyData.class).getBalance();
+        CurrencyData data = this.sqLiteHelper.get(currencyName, COLUMN_PLAYER, playerName, CurrencyData.class);
+        return data == null? 0d : data.getBalance();
+    }
+
+    @Nullable
+    public CurrencyData getCurrencyBalanceData(String playerName, String currencyName) {
+        LinkedList<CurrencyData> dataList = this.sqLiteHelper.getDataByString(currencyName, COLUMN_PLAYER + " = ?", new String[]{playerName}, CurrencyData.class);
+        if (!dataList.isEmpty()) {
+            return dataList.getFirst();
+        }
+        return null;
     }
 
     public void addCurrencyBalance(String playerName, String currencyName, double count, String reason) {
@@ -43,10 +58,13 @@ public class CurrencySqliteProvider implements CurrencyProvider {
     }
 
     public void setCurrencyBalance(String playerName, String currencyName, double count, boolean tip, String reason) {
-        CurrencyData data = new CurrencyData();
-        data.setPlayer(playerName);
-        data.setBalance(getCurrencyBalance(playerName, currencyName) + count);
-        sqLiteHelper.set(currencyName, COLUMN_PLAYER, currencyName, data);
+        CurrencyData data = getCurrencyBalanceData(playerName, currencyName);
+        if (data == null) {
+            sqLiteHelper.add(currencyName, new CurrencyData(playerName, count));
+            return;
+        } else {
+            sqLiteHelper.set(currencyName, COLUMN_PLAYER, currencyName, data);
+        }
         if (tip) {
             Player player = Server.getInstance().getPlayer(playerName);
             if (player != null) {
@@ -86,17 +104,60 @@ public class CurrencySqliteProvider implements CurrencyProvider {
         LinkedHashMap<String, Double> map = new LinkedHashMap<>();
         CurrencyMain.getRegisteredCurrencies().forEach(currency -> {
             if (currency.equals(currencyName)) {
-                this.sqLiteHelper.getDataByString(currencyName, "player = ?", new String[]{currencyName}, CurrencyData.class)
+                this.sqLiteHelper.getDataByString(currencyName, "true", new String[0], CurrencyData.class)
                         .forEach(data -> map.put(data.getPlayer(), data.getBalance()));
             }
         });
         return map;
     }
 
+    @Override
+    public void close() {
+        this.sqLiteHelper.close();
+    }
+
     public void createTableIfAbsent(String currencyName) {
         if (!this.sqLiteHelper.exists(currencyName)) {
             this.sqLiteHelper.addTable(currencyName,
                     SQLiteHelper.DBTable.asDbTable(CurrencyData.class));
+        }
+    }
+
+    public static class CurrencyData {
+
+        public long id;
+
+        public String player;
+
+        public double balance;
+
+        public CurrencyData() {
+            // no-op
+        }
+
+        public CurrencyData(String player, double balance) {
+            this.player = player;
+            this.balance = balance;
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+
+        public String getPlayer() {
+            return player;
+        }
+
+        public void setBalance(double balance) {
+            this.balance = balance;
+        }
+
+        public void setPlayer(String player) {
+            this.player = player;
+        }
+
+        public long getId() {
+            return id;
         }
     }
 }

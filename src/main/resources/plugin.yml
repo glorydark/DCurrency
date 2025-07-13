@@ -6,5 +6,5 @@ author: glorydark
 description: DCurrency
 load: POSTWORLD
 softdepend:
-  - EasyMySQL
+  - EasySQLX
   - PlaceHolderAPI

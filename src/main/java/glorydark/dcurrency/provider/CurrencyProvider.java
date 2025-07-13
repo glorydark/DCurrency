@@ -44,4 +44,6 @@ public interface CurrencyProvider {
     default double add(double origin, double value) {
         return new BigDecimal(origin).add(new BigDecimal(value)).doubleValue();
     }
+
+    void close();
 }

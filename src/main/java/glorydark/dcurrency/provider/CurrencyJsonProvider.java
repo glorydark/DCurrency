@@ -115,4 +115,9 @@ public class CurrencyJsonProvider implements CurrencyProvider {
         }
         return result;
     }
+
+    @Override
+    public void close() {
+
+    }
 }

@@ -2,14 +2,14 @@ package glorydark.dcurrency.provider;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import com.smallaswater.easysql.exceptions.MySqlLoginException;
-import com.smallaswater.easysql.mysql.data.SqlData;
-import com.smallaswater.easysql.mysql.data.SqlDataList;
-import com.smallaswater.easysql.mysql.utils.DataType;
-import com.smallaswater.easysql.mysql.utils.TableType;
-import com.smallaswater.easysql.mysql.utils.UserData;
-import com.smallaswater.easysql.v3.mysql.manager.SqlManager;
-import com.smallaswater.easysql.v3.mysql.utils.SelectType;
+import com.smallaswater.easysqlx.common.data.SqlData;
+import com.smallaswater.easysqlx.common.data.SqlDataList;
+import com.smallaswater.easysqlx.exceptions.MySqlLoginException;
+import com.smallaswater.easysqlx.mysql.utils.DataType;
+import com.smallaswater.easysqlx.mysql.utils.TableType;
+import com.smallaswater.easysqlx.mysql.utils.UserData;
+import com.smallaswater.easysqlx.mysql.manager.SqlManager;
+import com.smallaswater.easysqlx.mysql.utils.SelectType;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 
@@ -18,22 +18,26 @@ import java.util.Map;
 
 public class CurrencyMysqlProvider implements CurrencyProvider {
 
-    protected final String DATA_PLAYER_NAME = "player";
-    protected final String DATA_CURRENCY_VALUE = "balance";
+    protected static final String DATA_PLAYER_NAME = "player";
+    protected static final String DATA_CURRENCY_VALUE = "balance";
     protected SqlManager sqlManager;
 
     private final String TABLE_NAME_PREFIX = "DCurrency_";
 
-    public CurrencyMysqlProvider(String host, int port, String user, String password, String database) throws MySqlLoginException {
-        this.sqlManager = new SqlManager(CurrencyMain.getInstance(), new UserData(
-                user,
-                password,
-                host,
-                port,
-                database
-        ));
-        for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
-            this.createTableIfAbsent(registeredCurrency);
+    public CurrencyMysqlProvider(String host, int port, String user, String password, String database) {
+        try {
+            this.sqlManager = new SqlManager(CurrencyMain.getInstance(), new UserData(
+                    user,
+                    password,
+                    host,
+                    port,
+                    database
+            ));
+            for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
+                this.createTableIfAbsent(registeredCurrency);
+            }
+        } catch (MySqlLoginException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -123,6 +127,11 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
             }
         }
         return map;
+    }
+
+    @Override
+    public void close() {
+        this.sqlManager.disable();
     }
 
     public void createTableIfAbsent(String currencyName) {

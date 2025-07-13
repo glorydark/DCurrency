@@ -138,6 +138,7 @@ public class CurrencyMain extends PluginBase {
 
     @Override
     public void onDisable() {
+        provider.close();
         this.getLogger().info("DCurrency OnDisable");
     }
 
