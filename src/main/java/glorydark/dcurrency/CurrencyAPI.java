@@ -11,7 +11,7 @@ import java.util.*;
 public class CurrencyAPI {
 
     public static Map<String, Object> getPlayerConfigs(String playerName) {
-        return CurrencyMain.getProvider().getPlayerConfigs(playerName);
+        return CurrencyMain.getProvider().getPlayerCurrencyData(playerName);
     }
 
     public static List<String> getAllPlayers() {
@@ -115,7 +115,7 @@ public class CurrencyAPI {
         return CurrencyMain.getProvider().reduceCurrencyBalance(player.getName(), currencyName, count, reason);
     }
 
-    public static Map<String, Object> getPlayerConfigs(Player player) {
-        return CurrencyMain.getProvider().getPlayerConfigs(player.getName());
+    public static Map<String, Double> getPlayerConfigs(Player player) {
+        return CurrencyMain.getProvider().getPlayerCurrencyData(player.getName());
     }
 }

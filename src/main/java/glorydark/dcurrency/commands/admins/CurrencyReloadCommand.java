@@ -6,12 +6,10 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
-import glorydark.dcurrency.provider.CurrencyJsonProvider;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class CurrencyReloadCommand extends SubCommand {
 

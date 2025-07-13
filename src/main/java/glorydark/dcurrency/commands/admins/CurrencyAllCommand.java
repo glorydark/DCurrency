@@ -1,14 +1,11 @@
 package glorydark.dcurrency.commands.admins;
 
 import cn.nukkit.command.CommandSender;
-import cn.nukkit.utils.Config;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class CurrencyAllCommand extends SubCommand {
 
@@ -30,11 +27,9 @@ public class CurrencyAllCommand extends SubCommand {
             return false;
         }
         HashMap<String, Double> map = new HashMap<>();
-        File file = new File(CurrencyMain.getInstance().getPath() + "/players/");
-        for (File json : Objects.requireNonNull(file.listFiles())) {
-            Config config = new Config(json, Config.JSON);
-            for (String key : config.getKeys(false)) {
-                map.put(key, add(map.getOrDefault(key, 0.0), config.getDouble(key)));
+        for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
+            for (double value : CurrencyMain.getProvider().getAllPlayerData(registeredCurrency).values()) {
+                map.put(registeredCurrency, map.getOrDefault(registeredCurrency, 0d) + value);
             }
         }
         sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_seeAll_title"));

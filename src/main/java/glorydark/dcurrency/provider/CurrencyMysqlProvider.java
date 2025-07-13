@@ -18,9 +18,11 @@ import java.util.Map;
 
 public class CurrencyMysqlProvider implements CurrencyProvider {
 
-    protected final String DATA_CURRENCY_VALUE = "value";
-    protected final String DATA_PLAYER_NAME = "name";
+    protected final String DATA_PLAYER_NAME = "player";
+    protected final String DATA_CURRENCY_VALUE = "balance";
     protected SqlManager sqlManager;
+
+    private final String TABLE_NAME_PREFIX = "DCurrency_";
 
     public CurrencyMysqlProvider(String host, int port, String user, String password, String database) throws MySqlLoginException {
         this.sqlManager = new SqlManager(CurrencyMain.getInstance(), new UserData(
@@ -31,7 +33,7 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
                 database
         ));
         for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
-            createTableIfAbsent(registeredCurrency);
+            this.createTableIfAbsent(registeredCurrency);
         }
     }
 
@@ -88,8 +90,8 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         return true;
     }
 
-    public Map<String, Object> getPlayerConfigs(String playerName) {
-        Map<String, Object> map = new LinkedHashMap<>();
+    public Map<String, Double> getPlayerCurrencyData(String playerName) {
+        Map<String, Double> map = new LinkedHashMap<>();
         for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
             double balance = getCurrencyBalance(playerName, registeredCurrency);
             if (balance > 0) {
@@ -99,9 +101,33 @@ public class CurrencyMysqlProvider implements CurrencyProvider {
         return map;
     }
 
+    @Override
+    public Map<String, Double> getAllPlayerData(String currencyName) {
+        LinkedHashMap<String, Double> map = new LinkedHashMap<>();
+        if (CurrencyMain.getRegisteredCurrencies().contains(currencyName)) {
+            return map;
+        }
+        SqlData emptyData = new SqlData();
+        SqlDataList<SqlData> sqlDataList = this.sqlManager.getData(TABLE_NAME_PREFIX + currencyName, "*", emptyData);
+        if (sqlDataList == null) {
+            return map;
+        }
+        for (SqlData sqlData : sqlDataList) {
+            LinkedHashMap<String, Object> data = sqlData.getData();
+            try {
+                String playerId = (String) data.get(DATA_PLAYER_NAME);
+                long moneyObj = (long) data.get(DATA_CURRENCY_VALUE);
+                map.put(playerId, moneyObj / 100.0);
+            } catch (Throwable t) {
+                CurrencyMain.getInstance().getLogger().error("Error processing SqlData: " + sqlData, t);
+            }
+        }
+        return map;
+    }
+
     public void createTableIfAbsent(String currencyName) {
-        if (!this.sqlManager.isExistTable(currencyName)) {
-            this.sqlManager.createTable(currencyName,
+        if (!this.sqlManager.isExistTable(TABLE_NAME_PREFIX + currencyName)) {
+            this.sqlManager.createTable(TABLE_NAME_PREFIX + currencyName,
                     new TableType(DATA_PLAYER_NAME, DataType.getTEXT()),
                     new TableType(DATA_CURRENCY_VALUE, DataType.getDOUBLE())
             );

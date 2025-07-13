@@ -36,7 +36,7 @@ public class CurrencyMeCommand extends SubCommand {
         if (strings.length != 1 && strings.length != 2) {
             return false;
         }
-        Map<String, Object> map = CurrencyMain.getProvider().getPlayerConfigs(sender.getName());
+        Map<String, Double> map = CurrencyMain.getProvider().getPlayerCurrencyData(sender.getName());
         int maxIndex = map.keySet().size();
         if (maxIndex == 0) {
             sender.sendMessage(CurrencyMain.getLang().getTranslation("message_player_see_noCurrency"));

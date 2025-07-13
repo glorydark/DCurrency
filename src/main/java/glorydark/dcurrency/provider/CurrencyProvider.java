@@ -37,7 +37,9 @@ public interface CurrencyProvider {
 
     boolean reduceCurrencyBalance(String playerName, String currencyName, double count, String reason);
 
-    Map<String, Object> getPlayerConfigs(String playerName);
+    Map<String, Double> getPlayerCurrencyData(String playerName);
+
+    Map<String, Double> getAllPlayerData(String currencyName);
 
     default double add(double origin, double value) {
         return new BigDecimal(origin).add(new BigDecimal(value)).doubleValue();

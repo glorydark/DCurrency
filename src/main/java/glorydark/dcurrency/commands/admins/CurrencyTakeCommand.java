@@ -2,7 +2,6 @@ package glorydark.dcurrency.commands.admins;
 
 import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
-import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
 

@@ -70,14 +70,26 @@ public class CurrencySqliteProvider implements CurrencyProvider {
         return true;
     }
 
-    public Map<String, Object> getPlayerConfigs(String playerName) {
-        Map<String, Object> map = new LinkedHashMap<>();
+    public Map<String, Double> getPlayerCurrencyData(String playerName) {
+        Map<String, Double> map = new LinkedHashMap<>();
         for (String registeredCurrency : CurrencyMain.getRegisteredCurrencies()) {
             double balance = getCurrencyBalance(playerName, registeredCurrency);
             if (balance > 0) {
                 map.put(registeredCurrency, balance);
             }
         }
+        return map;
+    }
+
+    @Override
+    public Map<String, Double> getAllPlayerData(String currencyName) {
+        LinkedHashMap<String, Double> map = new LinkedHashMap<>();
+        CurrencyMain.getRegisteredCurrencies().forEach(currency -> {
+            if (currency.equals(currencyName)) {
+                this.sqLiteHelper.getDataByString(currencyName, "player = ?", new String[]{currencyName}, CurrencyData.class)
+                        .forEach(data -> map.put(data.getPlayer(), data.getBalance()));
+            }
+        });
         return map;
     }
 
