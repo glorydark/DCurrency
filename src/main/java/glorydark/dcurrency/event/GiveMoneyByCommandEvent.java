@@ -1,10 +1,8 @@
 package glorydark.dcurrency.event;
 
-import cn.nukkit.Player;
 import cn.nukkit.event.Cancellable;
 import cn.nukkit.event.Event;
 import cn.nukkit.event.HandlerList;
-import cn.nukkit.event.player.PlayerEvent;
 
 /**
  * @author glorydark

@@ -53,6 +53,7 @@ public class CurrencyGiveCommand extends SubCommand {
                         if (!ev.isCancelled()) {
                             CurrencyMain.getProvider().addCurrencyBalance(player, ev.getCurrencyName(), ev.getAmount(), reason);
                         }
+                        sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_each", currencyName, count));
                     }
                 }
                 break;
@@ -72,7 +73,7 @@ public class CurrencyGiveCommand extends SubCommand {
                             CurrencyMain.getProvider().addCurrencyBalance(playerName, ev.getCurrencyName(), ev.getAmount(), reason);
                         }
                     }
-                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3], reason));
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), currencyName, count, reason));
                 }
                 break;
             case "@r":
@@ -87,8 +88,8 @@ public class CurrencyGiveCommand extends SubCommand {
                     Server.getInstance().getPluginManager().callEvent(ev);
                     if (!ev.isCancelled()) {
                         CurrencyMain.getProvider().addCurrencyBalance(playerName, ev.getCurrencyName(), ev.getAmount(), reason);
+                        sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", playerName, ev.getCurrencyName(), ev.getAmount()));
                     }
-                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", playerName, strings[2], strings[3]));
                 }
                 break;
             default:
@@ -100,8 +101,8 @@ public class CurrencyGiveCommand extends SubCommand {
                     Server.getInstance().getPluginManager().callEvent(ev);
                     if (!ev.isCancelled()) {
                         CurrencyMain.getProvider().addCurrencyBalance(strings[1], ev.getCurrencyName(), ev.getAmount(), reason);
+                        sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", strings[1], ev.getCurrencyName(), ev.getAmount()));
                     }
-                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", strings[1], strings[2], strings[3]));
                 }
                 break;
         }
