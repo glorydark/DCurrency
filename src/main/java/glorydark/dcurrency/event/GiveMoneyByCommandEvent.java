@@ -40,7 +40,7 @@ public class GiveMoneyByCommandEvent extends Event implements Cancellable {
         return currencyName;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
