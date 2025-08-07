@@ -6,6 +6,7 @@ import cn.nukkit.command.CommandSender;
 import glorydark.dcurrency.CurrencyAPI;
 import glorydark.dcurrency.CurrencyMain;
 import glorydark.dcurrency.commands.SubCommand;
+import glorydark.dcurrency.event.GiveMoneyByCommandEvent;
 import glorydark.dcurrency.provider.CurrencyJsonProvider;
 
 import java.util.ArrayList;
@@ -40,12 +41,18 @@ public class CurrencyGiveCommand extends SubCommand {
             sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_unregistered_currencies", strings[2]));
             return false;
         }
+        String currencyName = strings[2];
+        double count = Double.parseDouble(strings[3]);
         switch (strings[1]) {
             case "@each":
                 if (CurrencyMain.getProvider() instanceof CurrencyJsonProvider) {
                     List<String> players = CurrencyAPI.getAllPlayers();
                     for (String player : players) {
-                        CurrencyMain.getProvider().addCurrencyBalance(player, strings[2], Double.parseDouble(strings[3]), reason);
+                        GiveMoneyByCommandEvent ev = new GiveMoneyByCommandEvent(player, currencyName, count, reason);
+                        Server.getInstance().getPluginManager().callEvent(ev);
+                        if (!ev.isCancelled()) {
+                            CurrencyMain.getProvider().addCurrencyBalance(player, ev.getCurrencyName(), ev.getAmount(), reason);
+                        }
                     }
                 }
                 break;
@@ -54,33 +61,48 @@ public class CurrencyGiveCommand extends SubCommand {
                 if (allPlayerList.isEmpty()) {
                     sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_no_online_player"));
                     return true;
+                } else {
+                    List<String> playerNames = new ArrayList<>();
+                    for (Player player : allPlayerList) {
+                        String playerName = player.getName();
+                        playerNames.add(playerName);
+                        GiveMoneyByCommandEvent ev = new GiveMoneyByCommandEvent(playerName, currencyName, count, reason);
+                        Server.getInstance().getPluginManager().callEvent(ev);
+                        if (!ev.isCancelled()) {
+                            CurrencyMain.getProvider().addCurrencyBalance(playerName, ev.getCurrencyName(), ev.getAmount(), reason);
+                        }
+                    }
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3], reason));
                 }
-                List<String> playerNames = new ArrayList<>();
-                for (Player player : allPlayerList) {
-                    String playerName = player.getName();
-                    playerNames.add(playerName);
-                    CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]), reason);
-                }
-                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_all", Arrays.toString(playerNames.toArray()).replace("[", "").replace("]", ""), strings[2], strings[3], reason));
                 break;
             case "@r":
                 Collection<Player> allPlayerCollection = Server.getInstance().getOnlinePlayers().values();
                 if (allPlayerCollection.isEmpty()) {
                     sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency_no_online_player"));
                     return true;
+                } else {
+                    ThreadLocalRandom random = ThreadLocalRandom.current();
+                    String playerName = allPlayerCollection.toArray(new Player[0])[random.nextInt(0, allPlayerCollection.size())].getName();
+                    GiveMoneyByCommandEvent ev = new GiveMoneyByCommandEvent(playerName, currencyName, count, reason);
+                    Server.getInstance().getPluginManager().callEvent(ev);
+                    if (!ev.isCancelled()) {
+                        CurrencyMain.getProvider().addCurrencyBalance(playerName, ev.getCurrencyName(), ev.getAmount(), reason);
+                    }
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", playerName, strings[2], strings[3]));
                 }
-                ThreadLocalRandom random = ThreadLocalRandom.current();
-                String playerName = allPlayerCollection.toArray(new Player[0])[random.nextInt(0, allPlayerCollection.size())].getName();
-                CurrencyMain.getProvider().addCurrencyBalance(playerName, strings[2], Double.parseDouble(strings[3]), reason);
-                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", playerName, strings[2], strings[3]));
                 break;
             default:
                 if (!Server.getInstance().lookupName(strings[1]).isPresent()) {
                     sender.sendMessage(CurrencyMain.getLang().getTranslation("message.default.player_not_found", strings[1]));
                     return false;
+                } else {
+                    GiveMoneyByCommandEvent ev = new GiveMoneyByCommandEvent(strings[1], currencyName, count, reason);
+                    Server.getInstance().getPluginManager().callEvent(ev);
+                    if (!ev.isCancelled()) {
+                        CurrencyMain.getProvider().addCurrencyBalance(strings[1], ev.getCurrencyName(), ev.getAmount(), reason);
+                    }
+                    sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", strings[1], strings[2], strings[3]));
                 }
-                CurrencyMain.getProvider().addCurrencyBalance(strings[1], strings[2], Double.parseDouble(strings[3]), reason);
-                sender.sendMessage(CurrencyMain.getLang().getTranslation("message_op_giveCurrency", strings[1], strings[2], strings[3]));
                 break;
         }
         return true;
