@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 public class CurrencyMain extends PluginBase {
@@ -140,6 +141,9 @@ public class CurrencyMain extends PluginBase {
     public void onDisable() {
         provider.close();
         this.getLogger().info("DCurrency OnDisable");
+        for (Handler handler : pluginLogger.getHandlers()) {
+            handler.close();
+        }
     }
 
     public static CurrencyProvider getProvider() {
